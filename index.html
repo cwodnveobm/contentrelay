@@ -1,0 +1,156 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ContentRelay | AI Content Automation</title>
+    <link rel="stylesheet" href="index.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="/index.css">
+</head>
+<body>
+    <div class="app-container">
+        <header>
+            <h1>
+                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="header-icon"><path d="M12 20h9"></path><path d="M16.5 3.5a2.121 2.121 0 0 1 3 3L7 19l-4 1 1-4L16.5 3.5z"></path></svg>
+                ContentRelay
+            </h1>
+            <p>Amplify Your Message. Effortlessly.</p>
+        </header>
+
+        <main class="content-wrapper">
+            <section class="history-panel" id="history-panel" aria-labelledby="history-title">
+                <div class="history-header">
+                    <div class="history-title-wrapper">
+                        <h2 id="history-title" class="panel-title">History</h2>
+                        <button id="toggle-history-button" aria-label="Toggle history panel" title="Toggle history panel">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="toggle-icon"><polyline points="15 18 9 12 15 6"></polyline></svg>
+                        </button>
+                    </div>
+                    <button id="clear-history-button" aria-label="Clear all generation history">Clear</button>
+                </div>
+                <div class="history-controls">
+                    <input type="search" id="history-search-input" placeholder="Search history..." aria-label="Search through past generations">
+                </div>
+                <ul id="history-list" class="history-list">
+                    <!-- History items will be populated here -->
+                </ul>
+            </section>
+
+            <section class="editor-panel">
+                <h2 class="panel-title">Create Your Post</h2>
+                <form id="prompt-form">
+                    <div class="form-group">
+                        <label for="template-select">Start with a Template</label>
+                        <div class="select-wrapper">
+                           <select id="template-select" aria-label="Select a content template">
+                                <!-- Options will be populated by script -->
+                           </select>
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="persona-input">Your Role / Persona</label>
+                        <input type="text" id="persona-input" placeholder="e.g., Jane Doe | Growth Marketer" aria-label="Your Role or Persona">
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="prompt-input">Post Topic / Core Idea</label>
+                        <textarea id="prompt-input" name="prompt" rows="5" placeholder="e.g., The importance of mentorship in career growth" aria-label="Core idea for the post" required></textarea>
+                    </div>
+
+                    <div class="form-group">
+                        <fieldset class="tone-fieldset">
+                            <legend>Select a Tone</legend>
+                            <div class="tone-options">
+                                <label><input type="radio" name="tone" value="Professional" checked> Professional</label>
+                                <label><input type="radio" name="tone" value="Reflective"> Reflective</label>
+                                <label><input type="radio" name="tone" value="Inspirational"> Inspirational</label>
+                                <label><input type="radio" name="tone" value="Technical"> Technical</label>
+                            </div>
+                        </fieldset>
+                    </div>
+
+                    <div class="form-group options-group">
+                       <label class="checkbox-label">
+                           <input type="checkbox" id="hashtags-checkbox" checked>
+                           Include #hashtags
+                       </label>
+                       <label class="checkbox-label">
+                           <input type="checkbox" id="question-checkbox" checked>
+                           End with a question
+                       </label>
+                    </div>
+
+
+                    <button type="submit" id="generate-button" aria-label="Generate post">
+                        <span class="button-text">Generate Post</span>
+                        <div class="spinner" style="display: none;"></div>
+                    </button>
+                </form>
+            </section>
+
+            <section class="preview-panel" aria-labelledby="preview-title">
+                <h2 id="preview-title" class="panel-title">Live Preview</h2>
+                <div class="preview-content">
+                    <div class="post-card" id="post-card" style="display: none;">
+                        <div class="post-header">
+                            <div class="profile-pic" aria-hidden="true"></div>
+                            <div class="profile-info">
+                                <span class="profile-name" id="profile-name">Your Name</span>
+                                <span class="profile-desc" id="profile-desc">Your Title</span>
+                            </div>
+                        </div>
+                        <div class="post-body" id="result" aria-live="polite" contenteditable="true"></div>
+                        <div class="post-footer">
+                             <div class="text-metrics">
+                                <span id="word-count" class="metric-count">0 words</span>
+                                <span id="character-count" class="metric-count">0 characters</span>
+                             </div>
+                             <div class="footer-actions">
+                                 <details class="actions-menu">
+                                     <summary class="actions-button">Actions</summary>
+                                     <div class="actions-dropdown">
+                                         <button id="copy-button">
+                                             <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path></svg>
+                                             <span>Copy Text</span>
+                                         </button>
+                                         <button id="regenerate-button">
+                                            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="1 4 1 10 7 10"></polyline><polyline points="23 20 23 14 17 14"></polyline><path d="M20.49 9A9 9 0 0 0 5.64 5.64L1 10m22 4l-4.64 4.36A9 9 0 0 1 3.51 15"></path></svg>
+                                             <span>Regenerate</span>
+                                         </button>
+                                         <button id="export-png-button">
+                                            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="18" height="18" rx="2" ry="2"></rect><circle cx="8.5" cy="8.5" r="1.5"></circle><polyline points="21 15 16 10 5 21"></polyline></svg>
+                                             <span>Export as PNG</span>
+                                         </button>
+                                     </div>
+                                 </details>
+                             </div>
+                        </div>
+                    </div>
+                    <div class="placeholder" id="preview-placeholder">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="64" height="64" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1" stroke-linecap="round" stroke-linejoin="round" class="feather feather-edit-3"><path d="M12 20h9"></path><path d="M16.5 3.5a2.121 2.121 0 0 1 3 3L7 19l-4 1 1-4L16.5 3.5z"></path></svg>
+                        <p>Your generated post will appear here.</p>
+                    </div>
+                    <div class="spinner-overlay" id="preview-spinner" style="display: none;">
+                        <div class="spinner"></div>
+                    </div>
+                </div>
+            </section>
+        </main>
+    </div>
+
+    <script type="importmap">
+      {
+        "imports": {
+          "@google/genai": "https://esm.sh/@google/genai@^0.7.0",
+          "html-to-image": "https://esm.sh/html-to-image@^1.11.11"
+        }
+      }
+    </script>
+    <script type="module" src="index.tsx"></script>
+<script type="module" src="/index.tsx"></script>
+</body>
+</html>
